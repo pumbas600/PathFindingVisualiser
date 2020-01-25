@@ -1,11 +1,13 @@
 package nz.pumbas;
 
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
@@ -23,6 +25,7 @@ public class Main extends Application {
     private static Stage primaryStage;
 
     private BufferedImage image;
+    private ImageView imageView;
     private PathFinderScene pathFinderScene;
 
     @Override
@@ -35,6 +38,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("Path Finding");
         primaryStage.setScene(menuScene);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 
@@ -51,9 +55,9 @@ public class Main extends Application {
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
 
-        TextFieldGroup tileSize = new TextFieldGroup("Input a tile size (in pixels)", 35);
-        TextFieldGroup widthSize = new TextFieldGroup("Input a width (in tiles)", 30);
-        TextFieldGroup heightSize = new TextFieldGroup("Input a height (in tiles)", 20);
+        TextFieldGroup tileSize = new TextFieldGroup("Input a tile size (in pixels)", PathFinderScene.TILE_SIZE);
+        TextFieldGroup widthSize = new TextFieldGroup("Input a width (in tiles)", PathFinderScene.WIDTH);
+        TextFieldGroup heightSize = new TextFieldGroup("Input a height (in tiles)", PathFinderScene.HEIGHT);
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource Image");
@@ -75,11 +79,16 @@ public class Main extends Application {
             changeToPathFindingScene(widthSize.getValue(), heightSize.getValue(), tileSize.getValue());
         });
 
+        HBox resourceBox = new HBox();
+        resourceBox.setAlignment(Pos.CENTER);
+        imageView = new ImageView();
+        resourceBox.getChildren().addAll(openResource, imageView);
+
 
         VBox vBox = new VBox(tileSize.gethBox(), widthSize.gethBox(), heightSize.gethBox());
 
         vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().addAll(openResource, start);
+        vBox.getChildren().addAll(resourceBox, start);
         vBox.setPadding(new Insets(5));
         vBox.setSpacing(10d);
         menuScene = new Scene(vBox);
@@ -90,6 +99,9 @@ public class Main extends Application {
             image = ImageIO.read(file);
             if (image.getHeight() > (height - 120) / 10f || image.getWidth() > width / 10f) {
                 image = null;
+            }
+            else {
+                imageView.setImage(SwingFXUtils.toFXImage(image, null));
             }
         }
         catch(IOException e) {
@@ -110,6 +122,7 @@ public class Main extends Application {
             pathFinderScene.initialisePathFinderScene();
         }
         primaryStage.setScene(pathFinderScene.getPathFinderScene());
+        primaryStage.centerOnScreen();
     }
 
 }

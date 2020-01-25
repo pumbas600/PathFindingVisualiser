@@ -6,11 +6,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import nz.pumbas.Utilities.HeapFiles.Heap;
 import nz.pumbas.Utilities.Node;
 import nz.pumbas.Utilities.Tag;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 public class PathFinder {
 
@@ -22,7 +24,8 @@ public class PathFinder {
     private GridPane grid;
 
     //A* Variables:
-    private ArrayList<Node> openSet = new ArrayList<>();
+    private Heap<Node> openSet = new Heap<>(Node.class, PathFinderScene.WIDTH * PathFinderScene.HEIGHT);
+    private HashSet<Node> closedSet = new HashSet<>();
 
     private static Color evaluatedNodeColour = Color.DARKBLUE;
     private static Color revealedNodeColour = Color.BLUE;
@@ -45,7 +48,7 @@ public class PathFinder {
         this.startNode = startNode;
         this.endNode = endNode;
 
-        openSet.add(startNode);
+        openSet.addItem(startNode);
         startNode.gCost = 0;
         startNode.setHCost(endNode);
 
@@ -63,26 +66,21 @@ public class PathFinder {
 
     private void pathFinding() {
         if (!openSet.isEmpty()) {
-            Node current = openSet.get(0);
 
-            //Get node with lowest fCost
-            for (int i = 1; i < openSet.size(); i++) {
-                //The node has a lower fcost, or the same fcost but a lower hcost
-                if (openSet.get(i).fCost() < current.fCost() || (openSet.get(i).fCost() == current.fCost() && openSet.get(i).hCost < current.hCost)) {
-                    current = openSet.get(i);
-                }
-            }
+            Node current = openSet.removeFirstItem();
+
+            closedSet.add(current);
 
             if (current == endNode) {
                 retracePath();
                 mainLoop.stop(); //Stop this loop
                 return;
             }
-            openSet.remove(current);
             if(current != startNode) current.setColour(evaluatedNodeColour);
 
             for (Node neighbour : getNeighbours(current)) {
-                double distanceCost = (isDiagonal(current, neighbour)) ? 1.4d : 1d;
+                if (closedSet.contains(neighbour)) continue;
+                double distanceCost = (canMoveDiagonally && isDiagonal(current, neighbour)) ? 1.4d : 1d;
 
                 double newGCost = current.gCost + distanceCost;
                 if (newGCost < neighbour.gCost) {
@@ -90,9 +88,12 @@ public class PathFinder {
                     neighbour.gCost = newGCost;
 
                     if (!openSet.contains(neighbour)) {
-                        openSet.add(neighbour);
                         neighbour.setHCost(endNode);
+                        openSet.addItem(neighbour);
                         if (neighbour != endNode) neighbour.setColour(revealedNodeColour);
+                    }
+                    else {
+                        openSet.updateItem(neighbour);
                     }
                     //Only create a new label if one doesn't exist - This prevents new fcosts being displayed over the top of the previous one.
                     if (neighbour.getLabel() == null) {

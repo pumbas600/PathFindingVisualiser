@@ -3,11 +3,11 @@ package nz.pumbas.Utilities;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import nz.pumbas.Main;
 import nz.pumbas.PathFinderScene;
+import nz.pumbas.Utilities.HeapFiles.HeapItem;
 import org.jetbrains.annotations.NotNull;
 
-public class Node {
+public class Node implements HeapItem<Node> {
 
     private Tag tag = Tag.NONE;
     private Vector pos;
@@ -17,6 +17,8 @@ public class Node {
     public Node cameFrom;
     public double hCost;
     public double gCost = Double.POSITIVE_INFINITY;
+
+    private int itemIndex;
 
     public Node(Vector pos, Color colour) {
         this.pos = pos;
@@ -73,5 +75,26 @@ public class Node {
 
     public void setColour(Color colour) {
         rectangle.setFill(colour);
+    }
+
+    @Override
+    public void setItemIndex(int index) {
+        itemIndex = index;
+    }
+
+    @Override
+    public int getItemIndex() {
+        return itemIndex;
+    }
+
+    @Override
+    public int compareTo(@NotNull Node node) {
+        //Returns - compare as a lower number should be treated as having a higher priority, rather than a lower one.
+        int compare = Float.compare(fCost(), node.fCost());
+        if (compare == 0) {
+
+            return -Double.compare(hCost, node.hCost);
+        }
+        return -compare;
     }
 }
