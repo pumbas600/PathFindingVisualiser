@@ -1,0 +1,28 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" build-on-make="true" name="PathFindingVisualiser">
+    <output-path>$PROJECT_DIR$/out/artifacts/PathFindingVisualiser</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="C:\Java\PathFindiningVisualiser\src\nz\pumbas\Main.java" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="icons">
+          <JavaFxApplicationIcons>
+            <option name="windowsIcon" value="$PROJECT_DIR$/AStarAlgorithm.ico" />
+          </JavaFxApplicationIcons>
+        </option>
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="PathFindingVisualiser.jar">
+        <element id="module-output" name="PathFindingVisualiser" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
