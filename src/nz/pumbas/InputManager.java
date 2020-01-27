@@ -2,11 +2,14 @@ package nz.pumbas;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import nz.pumbas.DifferentScenes.MenuScene;
 import nz.pumbas.DifferentScenes.SceneController;
+import nz.pumbas.PathFinders.AStarPathFinder;
+import nz.pumbas.PathFinders.PathFinder;
 import nz.pumbas.Utilities.GlobalConstants;
 import nz.pumbas.Utilities.Tag;
 import nz.pumbas.Utilities.Node;
@@ -31,12 +34,11 @@ public class InputManager {
         speedScrollBar.setMax(60);
         speedScrollBar.setValue(15);
 
-        this.pathFinder = new PathFinder(grid, speedScrollBar);
-
         Button startNodeButton = new Button("Start Tile");
         Button addBarrier = new Button("Add Barrier");
         Button endNodeButton = new Button("End Tile");
         Button beginSearch = new Button("Begin Search");
+        Button resetButton = new Button("Reset");
 
         startNodeButton.setOnMouseClicked(event -> placeMode = Tag.START);
         addBarrier.setOnMouseClicked(event -> placeMode = Tag.BARRIER);
@@ -47,13 +49,37 @@ public class InputManager {
             startNodeButton.setDisable(true);
             addBarrier.setDisable(true);
             endNodeButton.setDisable(true);
-            begunPathFinding = true;
-            pathFinder.beginPathFinding(nodeGrid, startNode, endNode);
             beginSearch.setDisable(true);
+            begunPathFinding = true;
+            pathFinder = new AStarPathFinder(grid, speedScrollBar);
+            pathFinder.beginPathFinding(nodeGrid, startNode, endNode);
+        });
+
+        resetButton.setOnMouseClicked(event -> {
+            pathFinder.setStopped();
+            pathFinder = null;
+            for (int x = 0; x < GlobalConstants.WIDTH; x++) {
+                for (int y = 0; y < GlobalConstants.HEIGHT; y++) {
+                    Node node = nodeGrid[x][y];
+                    if (node.getTag() != Tag.BARRIER) {
+                        node.setTag(Tag.NONE);
+                        Label label = node.getLabel();
+                        if (label != null) label.setText("");
+                        node.gCost = Double.POSITIVE_INFINITY;
+                    }
+                }
+            }
+            startNode = null;
+            endNode = null;
+            startNodeButton.setDisable(false);
+            addBarrier.setDisable(false);
+            endNodeButton.setDisable(false);
+            beginSearch.setDisable(false);
+            begunPathFinding = false;
         });
 
         hbox.setAlignment(Pos.CENTER);
-        hbox.getChildren().addAll(back, speedScrollBar, startNodeButton, addBarrier, endNodeButton, beginSearch);
+        hbox.getChildren().addAll(back, speedScrollBar, startNodeButton, addBarrier, endNodeButton, beginSearch, resetButton);
 
         grid.setOnMouseClicked(event -> {
             if (begunPathFinding) return;
