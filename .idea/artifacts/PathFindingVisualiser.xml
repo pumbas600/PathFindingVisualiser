@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="javafx" build-on-make="true" name="PathFindingVisualiser">
+  <artifact type="javafx" name="PathFindingVisualiser">
     <output-path>$PROJECT_DIR$/out/artifacts/PathFindingVisualiser</output-path>
     <properties id="javafx-properties">
       <options>

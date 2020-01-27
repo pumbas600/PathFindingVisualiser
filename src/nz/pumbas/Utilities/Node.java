@@ -3,7 +3,6 @@ package nz.pumbas.Utilities;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import nz.pumbas.PathFinderScene;
 import nz.pumbas.Utilities.HeapFiles.HeapItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,12 +19,9 @@ public class Node implements HeapItem<Node> {
 
     private int itemIndex;
 
-    public Node(Vector pos, Color colour) {
+    public Node(Vector pos) {
         this.pos = pos;
-        this.rectangle = new Rectangle();
-        rectangle.setWidth(PathFinderScene.TILE_SIZE);
-        rectangle.setHeight(PathFinderScene.TILE_SIZE);
-        rectangle.setFill(colour);
+        this.rectangle = new Rectangle(GlobalConstants.TILE_SIZE, GlobalConstants.TILE_SIZE, tag.colour);
     }
 
     public Label getLabel() {
@@ -50,6 +46,7 @@ public class Node implements HeapItem<Node> {
 
     public void setTag(Tag tag) {
         this.tag = tag;
+        rectangle.setFill(tag.colour);
     }
 
     public int getX()

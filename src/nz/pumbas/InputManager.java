@@ -5,27 +5,26 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
+import nz.pumbas.DifferentScenes.MenuScene;
+import nz.pumbas.DifferentScenes.SceneController;
+import nz.pumbas.Utilities.GlobalConstants;
 import nz.pumbas.Utilities.Tag;
 import nz.pumbas.Utilities.Node;
 
 public class InputManager {
 
-    private GridPane grid;
     private Tag placeMode = Tag.START;
     private PathFinder pathFinder;
     private Node[][] nodeGrid;
     private Node endNode;
     private Node startNode;
+    private boolean begunPathFinding = false;
 
     public InputManager(HBox hbox, GridPane grid, Node[][] nodeGrid) {
-        this.grid = grid;
         this.nodeGrid = nodeGrid;
 
         Button back = new Button("Back");
-        back.setOnMouseClicked(event -> {
-            Main.setMenuScene();
-        });
+        back.setOnMouseClicked(event -> SceneController.changeSceneTo(new MenuScene()));
 
         ScrollBar speedScrollBar = new ScrollBar();
         speedScrollBar.setMin(1);
@@ -45,10 +44,10 @@ public class InputManager {
 
         beginSearch.setOnMouseClicked(event -> {
             if (startNode == null || endNode == null) return;
-
             startNodeButton.setDisable(true);
             addBarrier.setDisable(true);
             endNodeButton.setDisable(true);
+            begunPathFinding = true;
             pathFinder.beginPathFinding(nodeGrid, startNode, endNode);
             beginSearch.setDisable(true);
         });
@@ -57,8 +56,9 @@ public class InputManager {
         hbox.getChildren().addAll(back, speedScrollBar, startNodeButton, addBarrier, endNodeButton, beginSearch);
 
         grid.setOnMouseClicked(event -> {
-            int x = (int)(event.getX() / PathFinderScene.TILE_SIZE);
-            int y = (int)(event.getY() / PathFinderScene.TILE_SIZE);
+            if (begunPathFinding) return;
+            int x = (int)(event.getX() / GlobalConstants.TILE_SIZE);
+            int y = (int)(event.getY() / GlobalConstants.TILE_SIZE);
 
             switch (placeMode) {
                 case BARRIER:
@@ -74,40 +74,35 @@ public class InputManager {
                     setEndNode(x, y);
             }
         });
-
     }
 
     private void setEndNode(int x, int y) {
         if (endNode != null) {
             Node gridNode = nodeGrid[endNode.getX()][endNode.getY()];
-            gridNode.setColour(Color.WHITE);
+            gridNode.setTag(Tag.NONE);
         }
         endNode = nodeGrid[x][y];
-        endNode.setColour(Color.RED);
-        if (endNode.getTag() == Tag.BARRIER) endNode.setTag(Tag.NONE);
+        endNode.setTag(Tag.END);
     }
 
     private void setStartNode(int x, int y) {
         if (startNode != null) {
             Node gridNode = nodeGrid[startNode.getX()][startNode.getY()];
-            gridNode.setColour(Color.WHITE);
+            gridNode.setTag(Tag.NONE);
         }
         startNode = nodeGrid[x][y];
-        startNode.setColour(Color.GREEN);
-        if (startNode.getTag() == Tag.BARRIER) startNode.setTag(Tag.NONE);
+        startNode.setTag(Tag.START);
     }
 
     private void addBarrier(int x, int y) {
         Node gridNode = nodeGrid[x][y];
         if (gridNode != startNode && gridNode != endNode) {
             gridNode.setTag(Tag.BARRIER);
-            gridNode.setColour(Color.GRAY);
         }
     }
 
     private void removeBarrier(int x, int y) {
         Node gridNode = nodeGrid[x][y];
-        gridNode.setColour(Color.WHITE);
         gridNode.setTag(Tag.NONE);
 
     }
