@@ -1,6 +1,7 @@
 package nz.pumbas.Utilities;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -15,7 +16,7 @@ public class TextFieldGroup {
         hBox.setSpacing(5d);
 
         Label label = new Label(text);
-        label.setStyle("-fx-font-size: 15");
+        label.setStyle("-fx-font-size: 14");
 
         textField = new TextField(String.valueOf(defaultValue));
 

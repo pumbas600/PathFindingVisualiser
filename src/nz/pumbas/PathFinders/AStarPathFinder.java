@@ -1,11 +1,11 @@
 package nz.pumbas.PathFinders;
 
+import javafx.animation.AnimationTimer;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import nz.pumbas.PathFinders.PathFinder;
 import nz.pumbas.Utilities.GlobalConstants;
 import nz.pumbas.Utilities.HeapFiles.Heap;
 import nz.pumbas.Utilities.Node;
@@ -19,13 +19,12 @@ public class AStarPathFinder extends PathFinder {
     private Heap<Node> openSet = new Heap<>(Node.class, GlobalConstants.WIDTH * GlobalConstants.HEIGHT);
     private HashSet<Node> closedSet = new HashSet<>();
 
-    AStarPathFinder(GridPane grid, ScrollBar speedScrollBar) {
-        super(grid, speedScrollBar);
+    public AStarPathFinder(GridPane grid, Node[][] nodeGrid, ScrollBar speedScrollBar) {
+        super(grid, nodeGrid, speedScrollBar);
     }
 
     @Override
-    public void beginPathFinding(Node[][] nodeGrid, Node startNode, Node endNode) {
-        this.nodeGrid = nodeGrid;
+    public void beginPathFinding(Node startNode, Node endNode) {
         this.startNode = startNode;
         this.endNode = endNode;
 
@@ -39,7 +38,8 @@ public class AStarPathFinder extends PathFinder {
     @Override
     void pathFinding() {
         if (!openSet.isEmpty()) {
-            //Gets the node with the lowest fCost
+            //Gets the node with the lowest fCost - If the fCost for two nodes is the same, it gets
+            //the node closest to the end.
             Node current = openSet.removeFirstItem();
             closedSet.add(current);
 
@@ -56,27 +56,29 @@ public class AStarPathFinder extends PathFinder {
 
             for (Node neighbour : getNeighbours(current)) {
                 if (closedSet.contains(neighbour)) continue;
+                checkedNodesCount++;
+                //If the neighbour is diagonal to the current node, then the distance cost is 1.4, otherwise its 1
                 double distanceCost = (GlobalConstants.CAN_MOVE_DIAGONALLY && isDiagonal(current, neighbour)) ? 1.4d : 1d;
-
                 double newGCost = current.gCost + distanceCost;
                 //If the new gCost is less than the old one, a faster route has been found to this node.
                 if (newGCost < neighbour.gCost) {
-                    neighbour.cameFrom = current;
                     neighbour.gCost = newGCost;
+                    neighbour.cameFrom = current;
 
                     if (!openSet.contains(neighbour)) {
+                        //Sets the distance from the neighbour to the end node.
                         neighbour.setHCost(endNode);
                         openSet.addItem(neighbour);
                         if (neighbour != endNode) neighbour.setColour(GlobalConstants.REVEALED_NODE_COLOUR);
                     }
                     else {
+                        //Updates the neighbour in the openset so that the it's position reflects its new fCost
                         openSet.updateItem(neighbour);
                     }
                     //Only create a new label if one doesn't exist - This prevents new fcosts being displayed over the top of the previous one.
                     if (neighbour.getLabel() == null) {
                         Label fCostLabel = new Label(String.valueOf(neighbour.fCost()));
                         fCostLabel.setStyle("-fx-text-fill: white; -fx-font-size: " + GlobalConstants.TILE_SIZE * 0.35);
-                        fCostLabel.setAlignment(Pos.CENTER);
                         neighbour.setLabel(fCostLabel);
                         grid.add(fCostLabel, neighbour.getX(), neighbour.getY());
                     }

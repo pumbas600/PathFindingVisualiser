@@ -26,9 +26,9 @@ public class MenuScene implements CustomScene {
     private boolean generateRandomMaze;
 
     public MenuScene() {
-        TextFieldGroup tileSize = new TextFieldGroup("Input a tile size (in pixels)", GlobalConstants.TILE_SIZE);
-        TextFieldGroup widthSize = new TextFieldGroup("Input a width (in tiles)", GlobalConstants.WIDTH);
-        TextFieldGroup heightSize = new TextFieldGroup("Input a height (in tiles)", GlobalConstants.HEIGHT);
+        TextFieldGroup tileSize = new TextFieldGroup("Tile size (In pixels)", GlobalConstants.TILE_SIZE);
+        TextFieldGroup widthSize = new TextFieldGroup("Width (In tiles)", GlobalConstants.WIDTH);
+        TextFieldGroup heightSize = new TextFieldGroup("Height (In tiles)", GlobalConstants.HEIGHT);
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource Image");
@@ -51,11 +51,15 @@ public class MenuScene implements CustomScene {
         });
 
         HBox resourceBox = new HBox();
+        resourceBox.setSpacing(10);
         resourceBox.setAlignment(Pos.CENTER);
         imageView = new ImageView();
         resourceBox.getChildren().addAll(openResource, imageView);
 
-        CheckBox generateMazeCheckBox = new CheckBox("Generate Random Maze:");
+        CheckBox canMoveDiagonallyCheckBox = new CheckBox("Allow Diagonal Movement");
+        canMoveDiagonallyCheckBox.setOnAction(actionEvent -> GlobalConstants.CAN_MOVE_DIAGONALLY = canMoveDiagonallyCheckBox.isSelected());
+
+        CheckBox generateMazeCheckBox = new CheckBox("Generate Random Maze");
         generateMazeCheckBox.setOnAction(actionEvent -> {
             generateRandomMaze = generateMazeCheckBox.isSelected();
             resourceBox.setDisable(generateRandomMaze);
@@ -68,14 +72,14 @@ public class MenuScene implements CustomScene {
         VBox vBox = new VBox(tileSize.gethBox(), widthSize.gethBox(), heightSize.gethBox());
 
         vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().addAll(generateMazeCheckBox, resourceBox, start);
+        vBox.getChildren().addAll(canMoveDiagonallyCheckBox, generateMazeCheckBox, resourceBox, start);
         vBox.setPadding(new Insets(5));
         vBox.setSpacing(10d);
         scene = new Scene(vBox);
     }
 
     private void openResourceFile(File file) {
-        double maxVerticalHeight = GlobalConstants.SCREEN_HEIGHT - GlobalConstants.TOP_BAR_HEIGHT - PathFinderScene.PathFinderOptionBarSize;
+        double maxVerticalHeight = GlobalConstants.SCREEN_HEIGHT - GlobalConstants.TOP_BAR_HEIGHT - PathFinderScene.PATHFINDER_OPTION_BAR_SIZE;
 
         try {
             image = ImageIO.read(file);

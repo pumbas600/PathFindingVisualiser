@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 
 public class PathFinderScene implements CustomScene {
 
-    public static double PathFinderOptionBarSize = 40d;
+    public static double PATHFINDER_OPTION_BAR_SIZE = 40d;
 
     private Scene scene;
     private Node[][] nodeGrid;
@@ -22,7 +22,7 @@ public class PathFinderScene implements CustomScene {
     public PathFinderScene(int width, int height, int tileSize, boolean generateRandomMaze) {
         GlobalConstants.WIDTH = width;
         GlobalConstants.HEIGHT = height;
-        double maxVerticalHeight = GlobalConstants.SCREEN_HEIGHT - GlobalConstants.TOP_BAR_HEIGHT - PathFinderOptionBarSize;
+        double maxVerticalHeight = GlobalConstants.SCREEN_HEIGHT - GlobalConstants.TOP_BAR_HEIGHT - PATHFINDER_OPTION_BAR_SIZE;
         double maxHorizonalWidth = GlobalConstants.SCREEN_WIDTH;
         GlobalConstants.TILE_SIZE = (int) Math.min(tileSize,
                 Math.min(maxHorizonalWidth / GlobalConstants.WIDTH, maxVerticalHeight / GlobalConstants.HEIGHT));
@@ -36,7 +36,7 @@ public class PathFinderScene implements CustomScene {
     public PathFinderScene(BufferedImage image) {
         GlobalConstants.WIDTH = image.getWidth();
         GlobalConstants.HEIGHT = image.getHeight();
-        double maxVerticalHeight = GlobalConstants.SCREEN_HEIGHT - GlobalConstants.TOP_BAR_HEIGHT - PathFinderOptionBarSize;
+        double maxVerticalHeight = GlobalConstants.SCREEN_HEIGHT - GlobalConstants.TOP_BAR_HEIGHT - PATHFINDER_OPTION_BAR_SIZE;
         double maxHorizonalWidth = GlobalConstants.SCREEN_WIDTH;
         GlobalConstants.TILE_SIZE = (int) Math.min(maxHorizonalWidth / GlobalConstants.WIDTH, maxVerticalHeight / GlobalConstants.HEIGHT);
 
@@ -52,15 +52,20 @@ public class PathFinderScene implements CustomScene {
         grid.setGridLinesVisible(true);
         borderPane.setBottom(grid);
 
-        HBox hBox = new HBox();
-        hBox.setPadding(new Insets(5));
-        hBox.setSpacing(10d);
-        hBox.setMinWidth(GlobalConstants.WIDTH * GlobalConstants.TILE_SIZE);
-        hBox.setMinHeight(PathFinderOptionBarSize);
-        borderPane.setTop(hBox);
+//        HBox hBox = new HBox();
+//        hBox.setPadding(new Insets(5));
+//        hBox.setSpacing(10d);
+//        hBox.setMinWidth();
+//        hBox.setMinHeight(PathFinderOptionBarSize);
+        BorderPane topBar = new BorderPane();
+        topBar.setMinWidth(GlobalConstants.WIDTH * GlobalConstants.TILE_SIZE);
+        topBar.setMinHeight(PATHFINDER_OPTION_BAR_SIZE);
+        topBar.setPadding(new Insets(5));
+
+        borderPane.setTop(topBar);
 
         scene = new Scene(borderPane);
-        new InputManager(hBox, grid, nodeGrid);
+        new InputManager(topBar, grid, nodeGrid);
     }
 
     /*

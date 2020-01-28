@@ -1,8 +1,10 @@
 package nz.pumbas.PathFinders;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.GridPane;
+import nz.pumbas.InputManager;
 import nz.pumbas.Utilities.GlobalConstants;
 import nz.pumbas.Utilities.Node;
 import nz.pumbas.Utilities.Tag;
@@ -13,6 +15,7 @@ import java.util.Collections;
 public abstract class PathFinder {
     protected GridPane grid;
     protected ScrollBar speedScrollBar;
+    protected Label checkedNodes;
 
     protected Node startNode;
     protected Node endNode;
@@ -22,12 +25,16 @@ public abstract class PathFinder {
     protected AnimationTimer mainLoop;
     protected int frame = 0;
 
-    public PathFinder(GridPane grid, ScrollBar speedScrollBar) {
+    protected int checkedNodesCount = 0;
+
+    public PathFinder(GridPane grid, Node[][] nodeGrid, ScrollBar speedScrollBar) {
         this.grid = grid;
+        this.nodeGrid = nodeGrid;
         this.speedScrollBar = speedScrollBar;
+        this.checkedNodes = InputManager.getInstance().checkedNodes;
     }
 
-    public abstract void beginPathFinding(Node[][] nodeGrid, Node startNode, Node endNode);
+    public abstract void beginPathFinding(Node startNode, Node endNode);
     abstract void pathFinding();
 
     protected void startMainLoop() {
@@ -37,8 +44,10 @@ public abstract class PathFinder {
             public void handle(long currentNanoTime)
             {
                 frame++;
-                if (frame % (FPS / (int) speedScrollBar.getValue()) == 0)
+                if (frame % (FPS / (int) speedScrollBar.getValue()) == 0) {
+                    checkedNodes.setText(String.valueOf(checkedNodesCount));
                     pathFinding();
+                }
             }
         }).start();
     }
@@ -76,7 +85,7 @@ public abstract class PathFinder {
     protected void retracePath() {
         Node currentNode = endNode.cameFrom;
         ArrayList<Node> path = new ArrayList<>();
-        while (currentNode != startNode) {
+        while (currentNode != startNode && currentNode != null) {
             path.add(currentNode);
             currentNode = currentNode.cameFrom;
         }

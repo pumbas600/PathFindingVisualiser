@@ -28,6 +28,7 @@ public class Heap<T extends HeapItem<T>> {
     }
 
     public boolean contains (T item) {
+        if (item.getItemIndex() >= currentItemCount) return false;
         return items[item.getItemIndex()].equals(item);
     }
 
