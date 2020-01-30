@@ -45,8 +45,7 @@ public class IOManager {
             hBox.setBorder(new Border(new BorderStroke(javafx.scene.paint.Color.BLACK, BorderStrokeStyle.SOLID,
                     CornerRadii.EMPTY, BorderWidths.DEFAULT)));
             hBox.setBackground(new Background(new BackgroundFill(
-                    javafx.scene.paint.Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY
-            )));
+                    javafx.scene.paint.Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
             popup.getContent().add(hBox);
             popup.setAutoHide(true);
             popup.show(Main.primaryStage);

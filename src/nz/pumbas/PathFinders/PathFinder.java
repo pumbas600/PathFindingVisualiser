@@ -31,7 +31,7 @@ public abstract class PathFinder {
         this.grid = grid;
         this.nodeGrid = nodeGrid;
         this.speedScrollBar = speedScrollBar;
-        this.checkedNodes = InputManager.getInstance().checkedNodes;
+        this.checkedNodes = InputManager.getInstance().NodeComparisons;
     }
 
     public abstract void beginPathFinding(Node startNode, Node endNode);

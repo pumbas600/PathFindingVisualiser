@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import nz.pumbas.Main;
 import nz.pumbas.Utilities.GlobalConstants;
+import nz.pumbas.Utilities.PopupClasses.PopupManager;
 import nz.pumbas.Utilities.TextFieldGroup;
 
 import javax.imageio.ImageIO;
@@ -85,6 +86,7 @@ public class MenuScene implements CustomScene {
             image = ImageIO.read(file);
             if (image.getHeight() > maxVerticalHeight / GlobalConstants.MIN_TILE_SIZE
                     || image.getWidth() > GlobalConstants.SCREEN_WIDTH / GlobalConstants.MIN_TILE_SIZE) {
+                PopupManager.createPopupAlert("Image is too large");
                 image = null;
             }
             else {

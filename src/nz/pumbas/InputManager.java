@@ -13,9 +13,6 @@ import nz.pumbas.PathFinders.DijkstraPathFinding;
 import nz.pumbas.PathFinders.PathFinder;
 import nz.pumbas.Utilities.*;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
 public class InputManager {
 
     private Tag placeMode = Tag.START;
@@ -27,7 +24,7 @@ public class InputManager {
     private GridPane grid;
 
     public ScrollBar speedScrollBar;
-    public Label checkedNodes;
+    public Label NodeComparisons;
 
     private static InputManager instance;
 
@@ -99,14 +96,14 @@ public class InputManager {
             pathFinderComboBox.setDisable(false);
             beginSearch.setDisable(false);
             begunPathFinding = false;
-            checkedNodes.setText("0");
+            NodeComparisons.setText("0");
             placeMode = Tag.START;
         });
         saveMenuItem.setOnAction(event -> IOManager.saveNodeGridAsImage(nodeGrid));
 
         menuButton.getItems().addAll(backMenuItem, new SeparatorMenuItem(), resetMentItem, saveMenuItem);
 
-        checkedNodes = new Label("0");
+        NodeComparisons = new Label("0");
 
         HBox leftSide = new HBox();
         leftSide.setSpacing(8d);
@@ -125,7 +122,7 @@ public class InputManager {
         rightSide.setMinWidth(GlobalConstants.WIDTH * GlobalConstants.TILE_SIZE / 4d);
         rightSide.setAlignment(Pos.CENTER_RIGHT);
         rightSide.getChildren().addAll(new Label("Algorithm"), pathFinderComboBox, beginSearch,
-                UtilityFunctions.horizontalSpace(15), new Label("Checked Nodes:"), checkedNodes);
+                UtilityFunctions.horizontalSpace(15), new Label("Node Comparisons:"), NodeComparisons);
 
         topBar.setLeft(leftSide);
         topBar.setCenter(middle);
@@ -135,6 +132,8 @@ public class InputManager {
             if (begunPathFinding) return;
             int x = (int)(event.getX() / GlobalConstants.TILE_SIZE);
             int y = (int)(event.getY() / GlobalConstants.TILE_SIZE);
+
+            if (x < 0 || x >= GlobalConstants.WIDTH || y < 0 || y >= GlobalConstants.HEIGHT) return;
 
             switch (placeMode) {
                 case BARRIER:
