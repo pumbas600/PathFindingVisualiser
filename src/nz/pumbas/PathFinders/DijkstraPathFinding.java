@@ -36,7 +36,7 @@ public class DijkstraPathFinding extends PathFinder {
         startMainLoop();
     }
     /*
-    Dijkstra's pathfinding algorithm which chooses the closest node to the start, slowly workin outwards
+    Dijkstra's pathfinding algorithm which chooses the closest node to the start, slowly working outwards
     until it reaches the end. As a result, many more nodes are checked incomparison to A*.
     More information, including the pseudocode can be found here: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Pseudocode
      */

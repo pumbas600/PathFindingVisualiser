@@ -74,8 +74,10 @@ public class InputManager {
 
         backMenuItem.setOnAction(event -> SceneController.changeSceneTo(new MenuScene()));
         resetMentItem.setOnAction(event -> {
-            pathFinder.setStopped();
-            pathFinder = null;
+            if (pathFinder != null) {
+                pathFinder.setStopped();
+                pathFinder = null;
+            }
             for (int x = 0; x < GlobalConstants.WIDTH; x++) {
                 for (int y = 0; y < GlobalConstants.HEIGHT; y++) {
                     Node node = nodeGrid[x][y];
